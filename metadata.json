@@ -1,0 +1,37 @@
+{
+    "title": "DEEP OC benchmarks_api",
+    "summary": "tf_cnn_benchmarks packed with DEEPaaS API",
+    "description": [
+		"This is benchmarks_api application using DEEPaaS API",
+           "",
+           "**References**\n",
+           ""
+	],
+    "keywords": [
+        "docker"
+    ],
+    "license": "MIT",
+    "date_creation": "YYYY-MM-DD",
+    "sources": {
+		"dockerfile_repo": "https://git.scc.kit.edu/deep/DEEP-OC-benchmarks_api",
+		"docker_registry_repo": "deephdc/deep-oc-benchmarks_api",
+		"code": "https://git.scc.kit.edu/deep/benchmarks_api"
+	},
+    "continuous_integration": {
+        "build_status_badge": "https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/DEEP-OC-benchmarks_api/master",
+        "build_status_url": "https://jenkins.indigo-datacloud.eu/job/Pipeline-as-code/job/DEEP-OC-org/job/DEEP-OC-benchmarks_api/job/master"
+    },
+    "tosca": [
+        {
+            "title": "Mesos (CPU)",
+            "url": "https://raw.githubusercontent.com/indigo-dc/tosca-templates/master/deep-oc/deep-oc-mesos-webdav.yml",
+            "inputs": [
+                "rclone_conf",
+                "rclone_url",
+                "rclone_vendor",
+                "rclone_user",
+                "rclone_pass"
+            ]
+        }
+    ]
+}

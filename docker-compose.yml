@@ -1,0 +1,30 @@
+version: '2.3'
+
+# if 'docker-compose run' is used
+# do not forget '--service-ports'!
+
+services:
+    benchmarks_api:
+      image: deephdc/deep-oc-benchmarks_api
+      ports:
+        - 5000:5000
+        - 6006:6006
+      entrypoint: ["deepaas-run", "--listen-ip=0.0.0.0"]
+
+
+    benchmarks_api-gpu:
+      image: deephdc/deep-oc-benchmarks_api:gpu
+      runtime: nvidia
+      ports:
+        - 5000:5000
+        - 6006:6006
+      entrypoint: ["deepaas-run", "--listen-ip=0.0.0.0"]
+
+
+    benchmarks_api-rclone:
+      extends:
+        service: benchmarks_api
+      volumes:
+        - $HOME/.config/rclone:/srv/.rclone
+      environment:
+        - RCLONE_CONFIG=/srv/.rclone/rclone.conf
