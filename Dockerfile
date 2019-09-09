@@ -75,6 +75,10 @@ ENV DISABLE_AUTHENTICATION_AND_ASSUME_AUTHENTICATED_USER yes
 # Install DEEP debug_log scripts:
 RUN git clone https://github.com/deephdc/deep-debug_log
 
+# Install TF Benchmarks (now our own fork):
+RUN git clone https://git.scc.kit.edu/deep/tf_cnn_tf_benchmarks.git tf_cnn_benchmarks
+ENV PYTHONPATH=/srv/tf_cnn_benchmarks
+
 # Install user app:
 RUN git clone -b $branch https://git.scc.kit.edu/deep/benchmarks_api && \
     cd  benchmarks_api && \
