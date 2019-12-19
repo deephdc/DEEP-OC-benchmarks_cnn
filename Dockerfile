@@ -26,6 +26,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
          curl \
          wget \
          $pyVer-setuptools \
+         $pyVer-dev \
          $pyVer-pip \
          $pyVer-wheel && \ 
     apt-get clean && \
@@ -73,11 +74,34 @@ RUN pip install --no-cache-dir \
 ENV DISABLE_AUTHENTICATION_AND_ASSUME_AUTHENTICATED_USER yes
 
 # Install DEEP debug_log scripts:
-RUN git clone https://github.com/deephdc/deep-debug_log
+RUN git clone https://github.com/deephdc/deep-debug_log /srv/.debug_log
+
+# Install JupyterLab
+ENV JUPYTER_CONFIG_DIR /srv/.jupyter/
+# Necessary for the Jupyter Lab terminal
+ENV SHELL /bin/bash
+RUN if [ "$jlab" = true ]; then \
+       pip install --no-cache-dir jupyterlab ; \
+       git clone https://github.com/deephdc/deep-jupyter /srv/.jupyter ; \
+    else echo "[INFO] Skip JupyterLab installation!"; fi
 
 # Install TF Benchmarks (now our own fork):
-RUN git clone https://git.scc.kit.edu/deep/tf_cnn_tf_benchmarks.git tf_cnn_benchmarks
+#RUN git clone https://git.scc.kit.edu/deep/tf_cnn_tf_benchmarks.git tf_cnn_benchmarks
+
+# Clone tf_cnn_benchmarks from the official repository into /benchmarks
+RUN git clone --depth 1 -b cnn_tf_v${TF_VERSION}_compatible https://github.com/tensorflow/benchmarks.git /srv/benchmarks.tmp && \
+    mv -T /srv/benchmarks.tmp/scripts/tf_cnn_benchmarks /srv/tf_cnn_benchmarks && rm -rf /srv/benchmarks.tmp
 ENV PYTHONPATH=/srv/tf_cnn_benchmarks
+
+# Copy one directory from tensorflow/models
+# ATTENTION! tensorflow/models is huge, ca. 1.1GB, 
+# trying to copy in "light way" but still ca.500MB
+RUN mkdir /srv/models.tmp && cd /srv/models.tmp && git init && \
+    git remote add origin https://github.com/tensorflow/models.git && \
+    git fetch --depth 1 origin && \
+    git checkout origin/r${TF_VERSION}.0 official/utils/logs && \
+    mv official /srv/tf_cnn_benchmarks && cd /srv && \
+    rm -rf /srv/models.tmp
 
 # Install user app:
 RUN git clone -b $branch https://git.scc.kit.edu/deep/benchmarks_api && \
