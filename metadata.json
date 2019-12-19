@@ -1,24 +1,31 @@
 {
     "title": "TF Benchmarks",
-    "summary": "tf_cnn_benchmarks packed with DEEPaaS API",
+    "summary": "tf_cnn_benchmarks accessed via DEEPaaS API",
     "description": [
-		"[tf_cnn_benchmarks](https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks)",
-	        "from TensorFlow team accessed via DEEPaaS API",
+		   "[tf_cnn_benchmarks](https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks)",
+	       "from TensorFlow team accessed via DEEPaaS API",
+           "",
+           "tf_cnn_benchmarks contains implementations of several popular convolutional models, ",
+           "and is designed to be as fast as possible. tf_cnn_benchmarks supports both running on a single machine ",
+           "or running in distributed mode across multiple hosts.",
+           "See the [High-Performance models guide](https://www.tensorflow.org/performance/performance_models) for more information.",
            "",
            "**References**\n",
-           ""
+           "[1] TF CNN Benchmarks: <a href=https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks>https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks</a>"
 	],
     "keywords": [
         "docker",
-	"tensorflow",
-	"api-v1"
+	    "tensorflow",
+        "cnn",
+        "trainable",
+	    "api-v1"
     ],
     "license": "MIT",
     "date_creation": "2019-12-19",
     "sources": {
-		"dockerfile_repo": "https://git.scc.kit.edu/deep/DEEP-OC-benchmarks_cnn_api",
+		"dockerfile_repo": "https://github.com/deephdc/DEEP-OC-benchmarks_cnn",
 		"docker_registry_repo": "deephdc/deep-oc-benchmarks_cnn",
-		"code": "https://git.scc.kit.edu/deep/benchmarks_cnn_api"
+		"code": "https://github.com/deephdc/benchmarks_cnn_api"
 	},
     "continuous_integration": {
         "build_status_badge": "https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/DEEP-OC-benchmarks_api/master",
