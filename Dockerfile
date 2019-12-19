@@ -107,6 +107,7 @@ ENV PYTHONPATH=/srv/tf_cnn_benchmarks
 
 ### (our own fork):
 ##RUN git clone https://git.scc.kit.edu/deep/tf_cnn_tf_benchmarks.git tf_cnn_benchmarks
+###
 # Clone tf_cnn_benchmarks from the official repository into /srv/benchmarks.tmp
 RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
     git clone --depth 1 -b cnn_tf_v${TF_VERSION}_compatible https://github.com/tensorflow/benchmarks.git /srv/benchmarks.tmp && \
