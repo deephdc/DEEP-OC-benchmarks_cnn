@@ -1,7 +1,17 @@
-# Dockerfile may have two Arguments: tag, branch
+# Dockerfile may have following Arguments: tag, pyVer, branch, jlab
 # tag - tag for the Base image, (e.g. 1.10.0-py3 for tensorflow)
 # pyVer - python versions as 'python' or 'python3' (default: python3)
 # branch - user repository branch to clone (default: master, other option: test)
+# jlab - if to insall JupyterLab (true) or not (false, default)
+#
+# To build the image:
+# $ docker build -t <dockerhub_user>/<dockerhub_repo> --build-arg arg=value .
+# or using default args:
+# $ docker build -t <dockerhub_user>/<dockerhub_repo> .
+#
+# Be Aware! For the Jenkins CI/CD pipeline, 
+# input args are defined inside the Jenkinsfile, not here!
+#
 
 ARG tag=1.10.0-py3
 
@@ -12,11 +22,17 @@ LABEL maintainer='A.Grupp, V.Kozlov (KIT)'
 LABEL version='0.1.0'
 # tf_cnn_benchmarks packed with DEEPaaS API
 
+# renew 'tag' to be access during the build
+ARG tag
+
 # python version
 ARG pyVer=python3
 
-# What user branch to clone (!)
+# What user branch to clone [!]
 ARG branch=master
+
+# If to install JupyterLab
+ARG jlab=true
 
 # Install ubuntu updates and python related stuff
 # link python3 to python, pip3 to pip, if needed
@@ -26,6 +42,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
          curl \
          wget \
          $pyVer-setuptools \
+         $pyVer-dev \
          $pyVer-pip \
          $pyVer-wheel && \ 
     apt-get clean && \
@@ -64,7 +81,7 @@ RUN wget https://downloads.rclone.org/rclone-current-linux-amd64.deb && \
 # Install DEEPaaS from PyPi
 # Install FLAAT (FLAsk support for handling Access Tokens)
 RUN pip install --no-cache-dir \
-        'deepaas>=0.5.0' \
+        'deepaas==0.5.1' \
         flaat && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /tmp/*
@@ -73,15 +90,47 @@ RUN pip install --no-cache-dir \
 ENV DISABLE_AUTHENTICATION_AND_ASSUME_AUTHENTICATED_USER yes
 
 # Install DEEP debug_log scripts:
-RUN git clone https://github.com/deephdc/deep-debug_log
+RUN git clone https://github.com/deephdc/deep-debug_log /srv/.debug_log
+
+# Install JupyterLab
+ENV JUPYTER_CONFIG_DIR /srv/.jupyter/
+# Necessary for the Jupyter Lab terminal
+ENV SHELL /bin/bash
+RUN if [ "$jlab" = true ]; then \
+       pip install --no-cache-dir jupyterlab ; \
+       git clone https://github.com/deephdc/deep-jupyter /srv/.jupyter ; \
+    else echo "[INFO] Skip JupyterLab installation!"; fi
+
+
+# Install TF Benchmarks
+ENV PYTHONPATH=/srv/tf_cnn_benchmarks
+
+### (our own fork):
+##RUN git clone https://git.scc.kit.edu/deep/tf_cnn_tf_benchmarks.git tf_cnn_benchmarks
+###
+# Clone tf_cnn_benchmarks from the official repository into /srv/benchmarks.tmp
+RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
+    git clone --depth 1 -b cnn_tf_v${TF_VERSION}_compatible https://github.com/tensorflow/benchmarks.git /srv/benchmarks.tmp && \
+    mv -T /srv/benchmarks.tmp/scripts/tf_cnn_benchmarks /srv/tf_cnn_benchmarks && rm -rf /srv/benchmarks.tmp
+
+# Copy one directory from tensorflow/models
+# ATTENTION! tensorflow/models is huge, ca. 1.1GB, 
+# trying to copy in "light way" but still ca.500MB
+RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
+    mkdir /srv/models.tmp && cd /srv/models.tmp && git init && \
+    git remote add origin https://github.com/tensorflow/models.git && \
+    git fetch --depth 1 origin && \
+    git checkout origin/r${TF_VERSION}.0 official/utils/logs && \
+    mv official /srv/tf_cnn_benchmarks && cd /srv && \
+    rm -rf /srv/models.tmp
 
 # Install TF Benchmarks (now our own fork):
 RUN git clone https://git.scc.kit.edu/deep/tf_cnn_tf_benchmarks.git tf_cnn_benchmarks
 ENV PYTHONPATH=/srv/tf_cnn_benchmarks
 
 # Install user app:
-RUN git clone -b $branch https://git.scc.kit.edu/deep/benchmarks_api && \
-    cd  benchmarks_api && \
+RUN git clone -b $branch https://github.com/deephdc/benchmarks_cnn_api && \
+    cd  benchmarks_cnn_api && \
     pip install --no-cache-dir -e . && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /tmp/* && \
@@ -91,8 +140,8 @@ RUN git clone -b $branch https://git.scc.kit.edu/deep/benchmarks_api && \
 # Open DEEPaaS port
 EXPOSE 5000
 
-# Open Monitoring port
-EXPOSE 6006
+# Open Monitoring and Jupyter port
+EXPOSE 6006 8888
 
 # Account for OpenWisk functionality (deepaas >=0.4.0) + proper docker stop
 CMD ["deepaas-run", "--openwhisk-detect", "--listen-ip", "0.0.0.0", "--listen-port", "5000"]

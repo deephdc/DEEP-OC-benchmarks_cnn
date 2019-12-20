@@ -2,13 +2,11 @@
 <img src="https://marketplace.deep-hybrid-datacloud.eu/images/logo-deep.png" alt="logo" width="300"/>
 </div>
 
-# DEEP-OC-benchmarks_api
+# DEEP-OC-benchmarks_cnn
 
-[![Build Status](https://jenkins.indigo-datacloud.eu:8080/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/DEEP-OC-benchmarks_api/master)](https://jenkins.indigo-datacloud.eu:8080/job/Pipeline-as-code/job/DEEP-OC-org/job/DEEP-OC-benchmarks_api/job/master)
+[![Build Status](https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/DEEP-OC-benchmarks_cnn/test)](https://jenkins.indigo-datacloud.eu/job/Pipeline-as-code/job/DEEP-OC-org/job/DEEP-OC-benchmarks_cnn/job/test)
 
-This is a container that will simply run the DEEP as a Service API component,
-with benchmarks_api (src: [benchmarks_api](https://git.scc.kit.edu/deep/benchmarks_api)).
-
+This is a container that will run the DEEP as a Service API component, [DEEPaaS API](https://github.com/indigo-dc/DEEPaaS), with [tf_cnn_benchmarks](https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks) from the TensorFlow team. The source code for integration of [tf_cnn_benchmarks](https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks) with [DEEPaaS API](https://github.com/indigo-dc/DEEPaaS) is located in [benchmarks_cnn_api](https://github.com/deephdc/benchmarks_cnn_api).
     
 ## Running the container
 
@@ -18,7 +16,7 @@ To run the Docker container directly from Docker Hub and start using the API
 simply run the following command:
 
 ```bash
-$ docker run -ti -p 5000:5000 -p 6006:6006 deephdc/deep-oc-benchmarks_api
+$ docker run -ti -p 5000:5000 -p 6006:6006 deephdc/deep-oc-benchmarks_cnn
 ```
 
 This command will pull the Docker container from the Docker Hub
@@ -40,23 +38,24 @@ to modify the `Dockerfile` for instance) follow the following instructions:
 
 Building the container:
 
-1. Get the `DEEP-OC-benchmarks_api` repository (this repo):
+1. Get the `DEEP-OC-benchmarks_cnn` repository:
 
     ```bash
-    $ git clone https://git.scc.kit.edu/deep/DEEP-OC-benchmarks_api
+    $ git clone https://git.scc.kit.edu/deep/DEEP-OC-benchmarks_cnn
     ```
 
 2. Build the container:
 
     ```bash
-    $ cd DEEP-OC-benchmarks_api
-    $ docker build -t deephdc/deep-oc-benchmarks_api .
+    $ cd DEEP-OC-benchmarks_cnn
+    $ docker build -t deephdc/deep-oc-benchmarks_cnn .
     ```
 
-3. Run the container:
+3. Run the container (if you enable JupyterLab during the build, `--build-arg jlab=true`, 
+you should also add port 8888, i.e. `-p 8888:8888`)::
 
     ```bash
-    $ docker run -ti -p 5000:5000 -p 6006:6006 deephdc/deep-oc-benchmarks_api
+    $ docker run -ti -p 5000:5000 -p 6006:6006 deephdc/deep-oc-benchmarks_cnn
     ```
 
 These three steps will download the repository from GitHub and will build the
