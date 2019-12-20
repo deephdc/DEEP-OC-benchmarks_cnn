@@ -22,7 +22,7 @@ LABEL maintainer='A.Grupp, V.Kozlov (KIT)'
 LABEL version='0.1.0'
 # tf_cnn_benchmarks packed with DEEPaaS API
 
-# renew 'tag' to be access during the build
+# renew 'tag' to access during the build
 ARG tag
 
 # python version
@@ -89,8 +89,6 @@ RUN pip install --no-cache-dir \
 # Disable FLAAT authentication by default
 ENV DISABLE_AUTHENTICATION_AND_ASSUME_AUTHENTICATED_USER yes
 
-# Install DEEP debug_log scripts:
-RUN git clone https://github.com/deephdc/deep-debug_log /srv/.debug_log
 
 # Install JupyterLab
 ENV JUPYTER_CONFIG_DIR /srv/.jupyter/
@@ -123,10 +121,6 @@ RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
     git checkout origin/r${TF_VERSION}.0 official/utils/logs && \
     mv official /srv/tf_cnn_benchmarks && cd /srv && \
     rm -rf /srv/models.tmp
-
-# Install TF Benchmarks (now our own fork):
-RUN git clone https://git.scc.kit.edu/deep/tf_cnn_tf_benchmarks.git tf_cnn_benchmarks
-ENV PYTHONPATH=/srv/tf_cnn_benchmarks
 
 # Install user app:
 RUN git clone -b $branch https://github.com/deephdc/benchmarks_cnn_api && \

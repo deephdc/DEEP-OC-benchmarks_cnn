@@ -4,7 +4,7 @@
 
 # DEEP-OC-benchmarks_cnn
 
-[![Build Status](https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/DEEP-OC-benchmarks_cnn/test)](https://jenkins.indigo-datacloud.eu/job/Pipeline-as-code/job/DEEP-OC-org/job/DEEP-OC-benchmarks_cnn/job/test)
+[![Build Status](https://jenkins.indigo-datacloud.eu/buildStatus/icon?job=Pipeline-as-code/DEEP-OC-org/DEEP-OC-benchmarks_cnn/master)](https://jenkins.indigo-datacloud.eu/job/Pipeline-as-code/job/DEEP-OC-org/job/DEEP-OC-benchmarks_cnn/job/master)
 
 This is a container that will run the DEEP as a Service API component, [DEEPaaS API](https://github.com/indigo-dc/DEEPaaS), with [tf_cnn_benchmarks](https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks) from the TensorFlow team. The source code for integration of [tf_cnn_benchmarks](https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks) with [DEEPaaS API](https://github.com/indigo-dc/DEEPaaS) is located in [benchmarks_cnn_api](https://github.com/deephdc/benchmarks_cnn_api).
     
