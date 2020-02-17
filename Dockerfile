@@ -32,7 +32,7 @@ ARG pyVer=python3
 ARG branch=master
 
 # If to install JupyterLab
-ARG jlab=true
+ARG jlab=false
 
 # Install ubuntu updates and python related stuff
 # link python3 to python, pip3 to pip, if needed
@@ -117,8 +117,6 @@ RUN git clone https://github.com/deephdc/deep-start /srv/.deep-start && \
 # Install TF Benchmarks
 ENV PYTHONPATH=/srv/tf_cnn_benchmarks
 
-### (our own fork):
-##RUN git clone https://git.scc.kit.edu/deep/tf_cnn_tf_benchmarks.git tf_cnn_benchmarks
 ###
 # Clone tf_cnn_benchmarks from the official repository into /srv/benchmarks.tmp
 RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
