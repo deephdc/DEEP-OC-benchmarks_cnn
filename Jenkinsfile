@@ -44,7 +44,8 @@ pipeline {
                             id_cpu = DockerBuild(id,
                                             tag: ['latest', 'cpu'], 
                                             build_args: ["tag=${env.base_cpu_tag}",
-                                                         "branch=master"])
+                                                         "branch=master",
+                                                         "jlab=false"])
                             // Check that the image starts and get_metadata responses correctly
                             sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}"
 
@@ -52,7 +53,8 @@ pipeline {
                             id_gpu = DockerBuild(id,
                                             tag: ['gpu'], 
                                             build_args: ["tag=${env.base_gpu_tag}",
-                                                         "branch=master"])
+                                                         "branch=master",
+                                                         "jlab=false"])
                         }
 
                         if (env.BRANCH_NAME == 'test') {
@@ -60,7 +62,8 @@ pipeline {
                             id_cpu = DockerBuild(id,
                                             tag: ['test', 'cpu-test'], 
                                             build_args: ["tag=${env.base_cpu_tag}",
-                                                         "branch=test"])
+                                                         "branch=test",
+                                                         "jlab=true"])
 
                             // Check that the image starts and get_metadata responses correctly
                             sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}:test"
@@ -69,7 +72,8 @@ pipeline {
                             id_gpu = DockerBuild(id,
                                             tag: ['gpu-test'], 
                                             build_args: ["tag=${env.base_gpu_tag}",
-                                                         "branch=test"])
+                                                         "branch=test",
+                                                         "jlab=true"])
                         }
                     }
                 }
