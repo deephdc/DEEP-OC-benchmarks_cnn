@@ -102,7 +102,6 @@ ENV JUPYTER_CONFIG_DIR /srv/.deep-start/
 ENV SHELL /bin/bash
 RUN if [ "$jlab" = true ]; then \
        pip install --no-cache-dir jupyterlab ; \
-       git clone https://github.com/deephdc/deep-jupyter /srv/.jupyter ; \
     else echo "[INFO] Skip JupyterLab installation!"; fi
 
 # EXPERIMENTAL: install deep-start script
