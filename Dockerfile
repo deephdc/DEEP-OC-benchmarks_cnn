@@ -118,9 +118,11 @@ ENV PYTHONPATH=/srv/tf_cnn_benchmarks
 
 ###
 # Clone tf_cnn_benchmarks from the official repository into /srv/benchmarks.tmp
+# Move tf_cnn_benchmarks to higher level, delete benchmarks.tmp
 RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
     git clone --depth 1 -b cnn_tf_v${TF_VERSION}_compatible https://github.com/tensorflow/benchmarks.git /srv/benchmarks.tmp && \
-    mv -T /srv/benchmarks.tmp/scripts/tf_cnn_benchmarks /srv/tf_cnn_benchmarks && rm -rf /srv/benchmarks.tmp
+    mv -T /srv/benchmarks.tmp/scripts/tf_cnn_benchmarks /srv/tf_cnn_benchmarks && \
+    rm -rf /srv/benchmarks.tmp
 
 # Copy one directory from tensorflow/models
 # ATTENTION! tensorflow/models is huge, ca. 1.1GB, 
@@ -133,13 +135,22 @@ RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
     mv official /srv/tf_cnn_benchmarks && cd /srv && \
     rm -rf /srv/models.tmp
 
-# Install user app:
+# Install user app
+# Patch tf_cnn_benchmarks, if necessary:
+# 1.10 - correct eval_results to show accuracy, add loss in "extras"
 RUN git clone -b $branch https://github.com/deephdc/benchmarks_cnn_api && \
     cd  benchmarks_cnn_api && \
     pip install --no-cache-dir -e . && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /tmp/* && \
-    cd ..
+    export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
+    export TF_CNN_PATCH=/srv/benchmarks_cnn_api/patches/tf_cnn_benchmarks_${TF_VERSION}.patch && \
+    if test -f ${TF_CNN_PATCH}; then \
+       cd /srv/tf_cnn_benchmarks && \
+       echo "[INFO] Applying ${TF_CNN_PATCH} in /srv/tf_cnn_benchmarks" && \
+       patch < ${TF_CNN_PATCH}; \
+    fi && \
+    cd /srv
 
 
 # Open DEEPaaS port
