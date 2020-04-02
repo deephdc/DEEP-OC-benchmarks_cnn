@@ -13,10 +13,11 @@
 # input args are defined inside the Jenkinsfile, not here!
 #
 
-ARG tag=1.10.0-py3
+ARG tag=1.10.0-py36
+ARG image=deephdc/tensorflow
 
 # Base image, e.g. tensorflow/tensorflow:1.12.0-py3
-FROM tensorflow/tensorflow:${tag}
+FROM ${image}:${tag}
 
 LABEL maintainer='A.Grupp, V.Kozlov (KIT)'
 LABEL version='0.1.0'
@@ -32,7 +33,7 @@ ARG pyVer=python3
 ARG branch=master
 
 # If to install JupyterLab
-ARG jlab=false
+ARG jlab=true
 
 # Install ubuntu updates and python related stuff
 # link python3 to python, pip3 to pip, if needed
@@ -88,8 +89,8 @@ RUN curl -sS  http://get.onedata.org/oneclient-1902.sh | bash && \
 # Install DEEPaaS from PyPi
 # Install FLAAT (FLAsk support for handling Access Tokens)
 RUN pip install --no-cache-dir \
-        'deepaas==0.5.1' \
-        flaat && \
+        'deepaas>=1.1.0' \
+        flaat>=0.5.3 && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /tmp/*
 
