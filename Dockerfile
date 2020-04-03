@@ -135,10 +135,12 @@ RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
 # Copy one directory from tensorflow/models
 # ATTENTION! tensorflow/models is huge, ca. 1.1GB, 
 # trying to copy in "light way" but still ca.500MB
+# !!! FOR 1.14 THERE IS NOW BRANCH r1.14.0 USE r1.13.0 !!!
 RUN export TF_VERSION=$(echo ${tag} | cut -d\. -f1,2) && \
     mkdir /srv/models.tmp && cd /srv/models.tmp && git init && \
     git remote add origin https://github.com/tensorflow/models.git && \
     git fetch --depth 1 origin && \
+    export TF_VERSION=1.13 && \
     git checkout origin/r${TF_VERSION}.0 official/utils/logs && \
     mv official /srv/tf_cnn_benchmarks && cd /srv && \
     rm -rf /srv/models.tmp
