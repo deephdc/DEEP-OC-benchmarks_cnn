@@ -13,14 +13,18 @@
 # input args are defined inside the Jenkinsfile, not here!
 #
 
-ARG tag=1.10.0-py36
-ARG image=deephdc/tensorflow
 
-# Base image, e.g. tensorflow/tensorflow:1.12.0-py3
+# ARG tag=1.10.0-py36
+# ARG image=deephdc/tensorflow
+
+ARG tag=1.14.0-py3
+ARG image=tensorflow/tensorflow
+
+# Base image, e.g. tensorflow/tensorflow:1.14.0-py3
 FROM ${image}:${tag}
 
 LABEL maintainer='A.Grupp, V.Kozlov (KIT)'
-LABEL version='0.1.0'
+LABEL version='0.2.0'
 # tf_cnn_benchmarks packed with DEEPaaS API
 
 # renew 'tag' to access during the build

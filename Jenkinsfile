@@ -9,9 +9,13 @@ pipeline {
 
     environment {
         dockerhub_repo = "deephdc/deep-oc-benchmarks_cnn"
-        base_image = "deephdc/tensorflow"
-        base_cpu_tag = "1.10.0-py36"
-        base_gpu_tag = "1.10.0-gpu-py36"
+        base_image = "tensorflow/tensorflow"
+        // base_image = "deephdc/tensorflow"
+        // base_cpu_tag = "1.10.0-py36"
+        // base_gpu_tag = "1.10.0-gpu-py36"
+        base_cpu_tag = "1.14.0-py3"
+        base_gpu_tag = "1.14.0-gpu-py3"
+
     }
 
     stages {
