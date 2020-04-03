@@ -32,7 +32,10 @@ ARG pyVer=python3
 ARG branch=master
 
 # If to install JupyterLab
-ARG jlab=false
+ARG jlab=true
+
+# Oneclient version, has to match OneData Provider and Linux version
+ARG oneclient_ver=19.02.0.rc2-1~bionic
 
 # Install ubuntu updates and python related stuff
 # link python3 to python, pip3 to pip, if needed
@@ -79,7 +82,7 @@ RUN wget https://downloads.rclone.org/rclone-current-linux-amd64.deb && \
     rm -rf /tmp/*
 
 # INSTALL oneclient for ONEDATA
-RUN curl -sS  http://get.onedata.org/oneclient-1902.sh | bash && \
+RUN curl -sS  http://get.onedata.org/oneclient-1902.sh | bash -s -- oneclient="$oneclient_ver" && \
     apt-get clean && \
     mkdir -p /mnt/onedata && \
     rm -rf /var/lib/apt/lists/* && \
@@ -102,7 +105,6 @@ ENV JUPYTER_CONFIG_DIR /srv/.deep-start/
 ENV SHELL /bin/bash
 RUN if [ "$jlab" = true ]; then \
        pip install --no-cache-dir jupyterlab ; \
-       git clone https://github.com/deephdc/deep-jupyter /srv/.jupyter ; \
     else echo "[INFO] Skip JupyterLab installation!"; fi
 
 # EXPERIMENTAL: install deep-start script
