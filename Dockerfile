@@ -35,7 +35,7 @@ ARG branch=master
 ARG jlab=true
 
 # Oneclient version, has to match OneData Provider and Linux version
-ARG oneclient_ver=19.02.0.rc2-1~bionic
+ARG oneclient_ver=19.02.0.rc2-1~xenial
 
 # Install ubuntu updates and python related stuff
 # link python3 to python, pip3 to pip, if needed
