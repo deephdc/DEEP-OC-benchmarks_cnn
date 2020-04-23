@@ -2,7 +2,7 @@
     "title": "TF Benchmarks",
     "summary": "tf_cnn_benchmarks accessed via DEEPaaS API",
     "description": [
-		   "[tf_cnn_benchmarks](https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks)",
+	       "[tf_cnn_benchmarks](https://github.com/tensorflow/benchmarks/tree/master/scripts/tf_cnn_benchmarks)",
 	       "from TensorFlow team accessed via [DEEPaaS API](https://github.com/indigo-dc/DEEPaaS)",
            "",
            "tf_cnn_benchmarks contains implementations of several popular convolutional models ",
@@ -20,7 +20,7 @@
 	    "tensorflow",
         "cnn",
         "trainable",
-	    "api-v1"
+	    "api-v2"
     ],
     "license": "MIT",
     "date_creation": "2019-12-19",
@@ -35,7 +35,7 @@
     },
     "tosca": [
         {
-            "title": "Mesos (CPU)",
+            "title": "Marathon",
             "url": "https://raw.githubusercontent.com/indigo-dc/tosca-templates/master/deep-oc/deep-oc-marathon-webdav.yml",
             "inputs": [
                 "rclone_conf",

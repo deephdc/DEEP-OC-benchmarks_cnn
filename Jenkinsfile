@@ -9,8 +9,10 @@ pipeline {
 
     environment {
         dockerhub_repo = "deephdc/deep-oc-benchmarks_cnn"
-        base_cpu_tag = "1.10.0-py3"
-        base_gpu_tag = "1.10.0-gpu-py3"
+        base_image = "tensorflow/tensorflow"
+        base_cpu_tag = "1.14.0-py3"
+        base_gpu_tag = "1.14.0-gpu-py3"
+
     }
 
     stages {
@@ -43,24 +45,30 @@ pipeline {
                             // CPU (aka latest, i.e. default)
                             id_cpu = DockerBuild(id,
                                             tag: ['latest', 'cpu'], 
-                                            build_args: ["tag=${env.base_cpu_tag}",
-                                                         "branch=master"])
+                                            build_args: ["image=${env.base_image}",
+                                                         "tag=${env.base_cpu_tag}",
+                                                         "branch=master",
+                                                         "jlab=true"])
                             // Check that the image starts and get_metadata responses correctly
                             sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}"
 
                              // GPU
                             id_gpu = DockerBuild(id,
                                             tag: ['gpu'], 
-                                            build_args: ["tag=${env.base_gpu_tag}",
-                                                         "branch=master"])
+                                            build_args: ["image=${env.base_image}",
+                                                         "tag=${env.base_gpu_tag}",
+                                                         "branch=master",
+                                                         "jlab=true"])
                         }
 
                         if (env.BRANCH_NAME == 'test') {
                             // CPU
                             id_cpu = DockerBuild(id,
                                             tag: ['test', 'cpu-test'], 
-                                            build_args: ["tag=${env.base_cpu_tag}",
-                                                         "branch=test"])
+                                            build_args: ["image=${env.base_image}",
+                                                         "tag=${env.base_cpu_tag}",
+                                                         "branch=test",
+                                                         "jlab=true"])
 
                             // Check that the image starts and get_metadata responses correctly
                             sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}:test"
@@ -68,8 +76,10 @@ pipeline {
                             // GPU
                             id_gpu = DockerBuild(id,
                                             tag: ['gpu-test'], 
-                                            build_args: ["tag=${env.base_gpu_tag}",
-                                                         "branch=test"])
+                                            build_args: ["image=${env.base_image}",
+                                                         "tag=${env.base_gpu_tag}",
+                                                         "branch=test",
+                                                         "jlab=true"])
                         }
                     }
                 }
