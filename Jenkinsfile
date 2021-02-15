@@ -9,13 +9,15 @@ pipeline {
 
     environment {
         dockerhub_repo = "deephdc/deep-oc-benchmarks_cnn"
-        base_image = "tensorflow/tensorflow"
-        // base_image = "deephdc/tensorflow"
+        base_image = "nvcr.io/nvidia/tensorflow"
+        base_tag = "20.06-tf2-py3"
         // it seems 'gpu' versions also work on CPU. Use only 'gpu'.
-        base_tag = "1.14.0-gpu-py3"
+        // Other combinations        
+        //base_image = "tensorflow/tensorflow"
+        //base_tag = "1.14.0-gpu-py3"
         // NVIDIA ngc repository images
-        base_nv_image = "nvcr.io/nvidia/tensorflow"
-        base_nv_tag = "20.06-tf2-py3"
+        //base_image = "nvcr.io/nvidia/tensorflow"
+        //base_tag = "20.06-tf2-py3"
     }
 
     stages {
