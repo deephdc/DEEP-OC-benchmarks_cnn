@@ -47,6 +47,7 @@ pipeline {
                         if (env.BRANCH_NAME == 'master') {
                             // tag flavors
                             tag_synthetic = ['latest', 'synthetic']
+                            tag_to_check = 'synthetic'
                             tag_dataset = ['dataset']
                             tag_pro = ['pro']
                         }
@@ -54,6 +55,7 @@ pipeline {
                             // tag flavors
                             // !!use double quotes, single quotes do not evaluate strings!!
                             tag_synthetic = ["${env.BRANCH_NAME}", "synthetic-${env.BRANCH_NAME}"]
+                            tag_to_check = "synthetic-${env.BRANCH_NAME}"
                             tag_dataset = ["dataset-${env.BRANCH_NAME}"]
                             tag_pro = ["pro-${env.BRANCH_NAME}"]
                         }
@@ -66,7 +68,7 @@ pipeline {
                                                          "branch=${env.BRANCH_NAME}",
                                                          "jlab=true"])
                         // Check that the image starts and get_metadata responses correctly
-                        sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}"
+                        sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}:${tag_to_check}"
 
                         // 'dataset' flavor
                         id_data = DockerBuild(id,
