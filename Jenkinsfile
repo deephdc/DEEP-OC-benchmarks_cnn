@@ -9,10 +9,15 @@ pipeline {
 
     environment {
         dockerhub_repo = "deephdc/deep-oc-benchmarks_cnn"
-        base_image = "tensorflow/tensorflow"
-        base_cpu_tag = "1.14.0-py3"
-        base_gpu_tag = "1.14.0-gpu-py3"
-
+        base_image = "nvcr.io/nvidia/tensorflow"
+        base_tag = "20.06-tf2-py3"
+        // it seems 'gpu' versions also work on CPU. Use only 'gpu'.
+        // Other combinations        
+        //base_image = "tensorflow/tensorflow"
+        //base_tag = "1.14.0-gpu-py3"
+        // NVIDIA ngc repository images
+        //base_image = "nvcr.io/nvidia/tensorflow"
+        //base_tag = "20.06-tf2-py3"
     }
 
     stages {
@@ -42,45 +47,47 @@ pipeline {
                         id = "${env.dockerhub_repo}"
 
                         if (env.BRANCH_NAME == 'master') {
-                            // CPU (aka latest, i.e. default)
-                            id_cpu = DockerBuild(id,
-                                            tag: ['latest', 'cpu'], 
-                                            build_args: ["image=${env.base_image}",
-                                                         "tag=${env.base_cpu_tag}",
-                                                         "branch=master",
-                                                         "jlab=true"])
-                            // Check that the image starts and get_metadata responses correctly
-                            sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}"
-
-                             // GPU
-                            id_gpu = DockerBuild(id,
-                                            tag: ['gpu'], 
-                                            build_args: ["image=${env.base_image}",
-                                                         "tag=${env.base_gpu_tag}",
-                                                         "branch=master",
-                                                         "jlab=true"])
+                            // tag flavors
+                            tag_synthetic = ['latest', 'synthetic']
+                            tag_to_check = 'synthetic'
+                            tag_dataset = ['dataset']
+                            tag_pro = ['pro']
                         }
-
                         if (env.BRANCH_NAME == 'test') {
-                            // CPU
-                            id_cpu = DockerBuild(id,
-                                            tag: ['test', 'cpu-test'], 
-                                            build_args: ["image=${env.base_image}",
-                                                         "tag=${env.base_cpu_tag}",
-                                                         "branch=test",
-                                                         "jlab=true"])
-
-                            // Check that the image starts and get_metadata responses correctly
-                            sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}:test"
-                            
-                            // GPU
-                            id_gpu = DockerBuild(id,
-                                            tag: ['gpu-test'], 
-                                            build_args: ["image=${env.base_image}",
-                                                         "tag=${env.base_gpu_tag}",
-                                                         "branch=test",
-                                                         "jlab=true"])
+                            // tag flavors
+                            // !!use double quotes, single quotes do not evaluate strings!!
+                            tag_synthetic = ["${env.BRANCH_NAME}", "synthetic-${env.BRANCH_NAME}"]
+                            tag_to_check = "synthetic-${env.BRANCH_NAME}"
+                            tag_dataset = ["dataset-${env.BRANCH_NAME}"]
+                            tag_pro = ["pro-${env.BRANCH_NAME}"]
                         }
+
+                        id_synth = DockerBuild(id,
+                                            tag: tag_synthetic, 
+                                            build_args: ["image=${env.base_image}",
+                                                         "tag=${env.base_tag}",
+                                                         "flavor=synthetic",
+                                                         "branch=${env.BRANCH_NAME}",
+                                                         "jlab=true"])
+                        // Check that the image starts and get_metadata responses correctly
+                        sh "bash ../check_oc_artifact/check_artifact.sh ${env.dockerhub_repo}:${tag_to_check}"
+
+                        // 'dataset' flavor
+                        id_data = DockerBuild(id,
+                                            tag: tag_dataset, 
+                                            build_args: ["image=${env.base_image}",
+                                                         "tag=${env.base_tag}",
+                                                         "flavor=dataset",
+                                                         "branch=${env.BRANCH_NAME}",
+                                                         "jlab=true"])
+                        // 'pro' flavor
+                        id_pro = DockerBuild(id,
+                                            tag: tag_pro, 
+                                            build_args: ["image=${env.base_image}",
+                                                         "tag=${env.base_tag}",
+                                                         "flavor=pro",
+                                                         "branch=${env.BRANCH_NAME}",
+                                                         "jlab=true"])
                     }
                 }
             }
@@ -102,8 +109,9 @@ pipeline {
             }
             steps{
                 script {
-                    DockerPush(id_cpu)
-                    DockerPush(id_gpu)
+                    DockerPush(id_synth)
+                    DockerPush(id_data)
+                    DockerPush(id_pro)
                 }
             }
             post {
