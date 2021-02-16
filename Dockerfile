@@ -13,11 +13,12 @@
 # input args are defined inside the Jenkinsfile, not here!
 #
 
-# ARG tag=1.10.0-py36
-# ARG image=deephdc/tensorflow
+#ARG image=tensorflow/tensorflow
+#ARG tag=1.14.0-gpu-py3
 
-ARG tag=1.14.0-gpu-py3
-ARG image=tensorflow/tensorflow
+# let's by default use NVIDIA Dockers. N.B.: they are large (ca.10GB)!
+ARG image=nvcr.io/nvidia/tensorflow
+ARG tag=20.06-tf2-py3
 
 # Base image, e.g. tensorflow/tensorflow:1.14.0-py3
 FROM ${image}:${tag}
