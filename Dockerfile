@@ -1,7 +1,7 @@
 # Dockerfile may have following Arguments: tag, pyVer, branch, jlab
 # tag - tag for the Base image, (e.g. 1.10.0-py3 for tensorflow)
 # branch - user repository branch to clone (default: master, other option: test)
-# flavor - becnhmark flavor ('synthetic', 'dataset', 'pro')
+# btype - becnhmark type ('benchmark', 'pro')
 # jlab - if to insall JupyterLab (true) or not (false, default)
 #
 # To build the image:
@@ -34,8 +34,8 @@ ARG tag
 # What user branch to clone [!]
 ARG branch=master
 
-# What benchmark flavor to use
-ARG flavor=synthetic
+# What benchmark type to use
+ARG btype=benchmark
 
 # If to install JupyterLab
 ARG jlab=true
@@ -118,7 +118,7 @@ RUN git clone https://github.com/deephdc/deep-start /srv/.deep-start && \
 # TF Benchmarks, offical/utils/logs scripts, apply patches (if necessary)
 # pull-tf_cnn_benchmarks.sh:
 # identifies TF version, installs tf_cnn_benchmarks and offical/utils/logs
-ENV BENCHMARK_FLAVOR ${flavor}
+ENV BENCHMARK_TYPE ${btype}
 ENV DOCKER_BASE_IMAGE ${image}:${tag}
 RUN git clone -b $branch https://github.com/deephdc/benchmarks_cnn_api && \
     cd  benchmarks_cnn_api && \
