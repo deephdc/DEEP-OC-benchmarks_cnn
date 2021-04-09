@@ -75,12 +75,13 @@ RUN wget https://downloads.rclone.org/rclone-current-linux-amd64.deb && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /tmp/*
 
-# INSTALL oneclient for ONEDATA
-RUN curl -sS  http://get.onedata.org/oneclient-1902.sh | bash -s -- oneclient="$oneclient_ver" && \
-    apt-get clean && \
-    mkdir -p /mnt/onedata && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp/*
+## INSTALL oneclient for ONEDATA. Skip with nv-21.03 images
+#RUN curl -sS  http://get.onedata.org/oneclient-1902.sh | bash -s -- oneclient="$oneclient_ver" && \
+#    apt-get clean && \
+#    mkdir -p /mnt/onedata && \
+#    rm -rf /var/lib/apt/lists/* && \
+#    rm -rf /tmp/*
+#
 
 # Install DEEPaaS from PyPi
 # Install FLAAT (FLAsk support for handling Access Tokens)
