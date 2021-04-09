@@ -43,6 +43,7 @@ ARG oneclient_ver=19.02.0.rc2-1~bionic
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y --no-install-recommends \
          git \
+         cmake \
          curl \
          wget \
          libnccl2 \

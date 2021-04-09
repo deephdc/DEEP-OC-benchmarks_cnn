@@ -1,7 +1,7 @@
-# Dockerfile may have following Arguments: tag, pyVer, branch, jlab
+# Dockerfile may have following Arguments: tag, branch, btype, jlab
 # tag - tag for the Base image, (e.g. 1.10.0-py3 for tensorflow)
 # branch - user repository branch to clone (default: master, other option: test)
-# flavor - becnhmark flavor ('synthetic', 'dataset', 'pro')
+# btype - becnhmark type ('benchmark', 'pro')
 # jlab - if to insall JupyterLab (true) or not (false, default)
 #
 # To build the image:
@@ -13,18 +13,14 @@
 # input args are defined inside the Jenkinsfile, not here!
 #
 
-#ARG image=tensorflow/tensorflow
-#ARG tag=1.14.0-gpu-py3
-
 # let's by default use NVIDIA Dockers. N.B.: they are large (ca.10GB)!
 ARG image=nvcr.io/nvidia/tensorflow
-ARG tag=20.06-tf2-py3
+ARG tag=21.03-tf2-py3
 
-# Base image, e.g. tensorflow/tensorflow:1.14.0-py3
+# Base image, e.g. tensorflow/tensorflow:2.4.0-py3
 FROM ${image}:${tag}
 
 LABEL maintainer='A.Grupp, V.Kozlov (KIT)'
-LABEL version='0.5.0'
 # tf_cnn_benchmarks packed with DEEPaaS API
 
 # renew 'image' and 'tag' to access during the build
@@ -34,11 +30,12 @@ ARG tag
 # What user branch to clone [!]
 ARG branch=master
 
-# What benchmark flavor to use
-ARG flavor=synthetic
+# What benchmark type to use
+ARG btype=benchmark
 
 # If to install JupyterLab
 ARG jlab=true
+
 
 # Oneclient version, has to match OneData Provider and Linux version
 ARG oneclient_ver=19.02.0.rc2-1~bionic
@@ -60,7 +57,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /tmp/* && \
     python3 --version && \
     pip3 --version
-
 
 # Set LANG environment
 ENV LANG C.UTF-8
@@ -90,7 +86,7 @@ RUN curl -sS  http://get.onedata.org/oneclient-1902.sh | bash -s -- oneclient="$
 # Install FLAAT (FLAsk support for handling Access Tokens)
 RUN pip3 install --no-cache-dir \
          'deepaas>=1.3.0' \
-         flaat>=0.5.3 && \
+         'flaat>=0.5.3' && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /tmp/*
 
@@ -118,7 +114,7 @@ RUN git clone https://github.com/deephdc/deep-start /srv/.deep-start && \
 # TF Benchmarks, offical/utils/logs scripts, apply patches (if necessary)
 # pull-tf_cnn_benchmarks.sh:
 # identifies TF version, installs tf_cnn_benchmarks and offical/utils/logs
-ENV BENCHMARK_FLAVOR ${flavor}
+ENV BENCHMARK_TYPE ${btype}
 ENV DOCKER_BASE_IMAGE ${image}:${tag}
 RUN git clone -b $branch https://github.com/deephdc/benchmarks_cnn_api && \
     cd  benchmarks_cnn_api && \
